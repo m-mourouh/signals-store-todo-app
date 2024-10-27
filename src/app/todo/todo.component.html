@@ -1,0 +1,76 @@
+<div class="w-[600px]">
+  <div class="flex justify-between items-center">
+    <h1 class="text-4xl">Task Manager</h1>
+    <span
+      >({{ store.completedTodos().length }}/{{ store.todos().length }})</span
+    >
+  </div>
+  <div>
+    <form class="flex gap-3" (ngSubmit)="addNewTodo()">
+      <input
+        name="todoTitle"
+        type="text"
+        pInputText
+        [(ngModel)]="todoTitle"
+        placeholder="Todo Title"
+        class="w-full"
+      />
+      <button
+        pButton
+        pRipple
+        label="Add"
+        class="p-button-primary"
+        [disabled]="!todoTitle()"
+      ></button>
+    </form>
+
+    <ul class="list-none p-0 my-8">
+      @for (todo of store.filteredTodos(); track todo.id) {
+      <li class="mb-4">
+        <p-checkbox
+          [inputId]="todo.id"
+          binary="true"
+          [ngModel]="todo.completed"
+          (onChange)="store.toggleTodo(todo.id)"
+        ></p-checkbox>
+        <label
+          [for]="todo.id"
+          class="ml-2"
+          [ngClass]="{ 'line-through': todo.completed }"
+          >{{ todo.title }}</label
+        >
+      </li>
+      } @empty {
+      <div class="card">
+        <p-messages
+          [value]="noTasksMessage"
+          [enableService]="false"
+          [closable]="false"
+        />
+      </div>
+
+      }
+    </ul>
+    <div class="flex gap-3 mt-6">
+      <p-button
+        label="All"
+        [outlined]="store.filter() !== 'all'"
+        (click)="store.setFilter('all')"
+      />
+
+      <p-button
+        label="Active"
+        [outlined]="store.filter() !== 'active'"
+        (click)="store.setFilter('active')"
+      />
+
+      <p-button
+        label="Completed"
+        [outlined]="store.filter() !== 'completed'"
+        (click)="store.setFilter('completed')"
+      />
+    </div>
+    
+    <app-toast/>
+  </div>
+</div>
